@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.stats import geom
+import matplotlib.pyplot as plt
 
 ########## Function definitions and imports ##############
 def GetStepSizeProb(a1, a2, beta, p):
@@ -23,8 +24,9 @@ def GetStepSizeProb(a1, a2, beta, p):
         Given that a1 mutates, the porbability that a1 mutates to a2
     """
     step_size = (a2-a1)
-    up_prob = max([0.01,0.5*(1-beta*p*a1)]) # Minimum value is 0.01 (allow for minimal probability of expansion at large alleles)
-    up_prob = min(up_prob, 0.99) # Maximum value is 0.99 (allow for minimal probability of contraction at small alleles)
+    if abs(step_size)>10: return 0
+    up_prob = max([0.001,0.5*(1-beta*p*a1)])
+    up_prob = min(up_prob, 0.999) # Maximum value is 0.99 (allow for minimal probability of contraction at small alleles)
     down_prob = 1-up_prob
     if step_size>0: dir_prob = up_prob
     else: dir_prob = down_prob
@@ -84,7 +86,7 @@ def Simulate(num_alleles, N_e, mu, beta, p, L, max_iter, end_samp_n, use_drift=T
     Parameters
     ----------
     num_alleles : int
-        Number of alleles included in simulation   
+        Number of alleles included in simulation (must be odd)   
     N_e: int
         Effective population size
     mu: float
@@ -108,6 +110,7 @@ def Simulate(num_alleles, N_e, mu, beta, p, L, max_iter, end_samp_n, use_drift=T
     ------
     allele_freqs: Simulated allele frequencies
     """
+    print("Simulating mu=%s beta=%s p=%s L=%s"%(mu, beta, p, L))
 
     # Set the starting vector of allele frequencies 
     allele_freqs = np.zeros(num_alleles)
@@ -125,10 +128,10 @@ def Simulate(num_alleles, N_e, mu, beta, p, L, max_iter, end_samp_n, use_drift=T
     
     # Transpose transition matrix
     transition_matrix_transpose = transition_matrix.transpose()
-  
-    # Apply mutation for t generations
+
     t = 0
     while t < max_iter:
+        # Apply mutation 
         allele_freqs = np.matmul(transition_matrix_transpose, allele_freqs)        
         if use_drift == True:
             # Use multinomial sampling
@@ -148,11 +151,11 @@ def Simulate(num_alleles, N_e, mu, beta, p, L, max_iter, end_samp_n, use_drift=T
         
     return allele_freqs
 
-def PlotAfreqs(afreqs):
+def PlotAfreqs(afreqs, fname=None):
     num_alleles = len(afreqs)
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.bar(list(range(-1*int(num_alleles/2), int(num_alleles/2)+1)), afreqs)
+    ax.bar(list(range(-1*int(num_alleles/2), int(num_alleles/2)+1)), afreqs, color="orange", edgecolor="black")
     ax.set_xlabel("Allele (relative to opt.)")
-    ax.set_ylabel("Frequency");   
-    return ax
+    ax.set_ylabel("Frequency");
+    if fname is not None: fig.savefig(fname)

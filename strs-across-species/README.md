@@ -1,4 +1,7 @@
-This snakemake workflow (in progress) does the following:
+The filtered STRs for spcies used in Fig. 3 can be found in 
+https://drive.google.com/drive/folders/1yO_ycN_eAITP8NWyYrgJd9gCBA8oHPu_. 
+
+This snakemake workflow does the following:
 
 1. Index fasta files
 2. Split fastas by chromosomes
@@ -6,7 +9,6 @@ This snakemake workflow (in progress) does the following:
 4. Filter Tandem Repeats founded
 5. Perform Statistical Analysis on STRs identified in each species
 6. Visualize Statistical Analysis
-
 
 Currently, it assumes genome fasta files are in:
 

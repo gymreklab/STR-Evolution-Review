@@ -1,5 +1,3 @@
-The filtered STRs for spcies used in Fig. 3 can be found in 
-https://drive.google.com/drive/folders/1yO_ycN_eAITP8NWyYrgJd9gCBA8oHPu_. 
 
 This snakemake workflow does the following:
 

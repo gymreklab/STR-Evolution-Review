@@ -151,11 +151,13 @@ def Simulate(num_alleles, N_e, mu, beta, p, L, max_iter, end_samp_n, use_drift=T
         
     return allele_freqs
 
-def PlotAfreqs(afreqs, fname=None):
+def PlotAfreqs(afreqs, fname=None, ax=None, title=None):
     num_alleles = len(afreqs)
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+    if ax is None:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
     ax.bar(list(range(-1*int(num_alleles/2), int(num_alleles/2)+1)), afreqs, color="orange", edgecolor="black")
     ax.set_xlabel("Allele (relative to opt.)")
     ax.set_ylabel("Frequency");
+    if title is not None: ax.set_title(title)
     if fname is not None: fig.savefig(fname)
